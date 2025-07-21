@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  CREATOR
+  ADMIN
+}
+
+model User {
+  id             Int           @id @default(autoincrement())
+  name           String
+  email          String        @unique
+  password       String
+  avatar         String?       @default("")
+  role           UserRole      @default(STUDENT)
+  creator_quizes Quiz[]
+  student_quizes QuizAttempt[]
+}
+
+enum QuizAttemptStatus {
+  ENROLLED
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+  PASSED
+  FAILED
+  EXPIRED
+}
+
+model QuizAttempt {
+  student_id Int
+  quiz_id    Int
+  student    User              @relation(fields: [student_id], references: [id])
+  quiz       Quiz              @relation(fields: [quiz_id], references: [id])
+  status     QuizAttemptStatus @default(ENROLLED)
+  grade      Int?
+  start_time DateTime          @default(now())
+  end_time   DateTime?
+
+  student_answers StudentAnswer[]
+
+  @@id([student_id, quiz_id])
+}
+
+model StudentAnswer {
+  id              Int         @id @default(autoincrement())
+  question_id     Int
+  question_text   String
+  options         String[]
+  correct_options String[]
+  student_answer  String[]
+  quiz_id         Int
+  student_id      Int
+  quiz            QuizAttempt @relation(fields: [quiz_id, student_id], references: [quiz_id, student_id])
+}
+
+enum QuizStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Quiz {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?
+  time_limit  Int? //minutes
+  status      QuizStatus
+
+  enrolled_students QuizAttempt[]
+  questions         Question[]
+  creator_id        Int
+  creator           User          @relation(fields: [creator_id], references: [id])
+
+  @@unique([id, creator_id])
+}
+
+model Question {
+  id              Int      @id @unique @default(autoincrement())
+  quiz_id         Int
+  quiz            Quiz     @relation(fields: [quiz_id], references: [id])
+  question_text   String
+  options         String[]
+  correct_options String[]
+}
