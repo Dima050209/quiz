@@ -42,18 +42,19 @@ enum QuizAttemptStatus {
 }
 
 model QuizAttempt {
+  id Int @id @default(autoincrement())
   student_id Int
   quiz_id    Int
   student    User              @relation(fields: [student_id], references: [id])
   quiz       Quiz              @relation(fields: [quiz_id], references: [id])
   status     QuizAttemptStatus @default(ENROLLED)
   grade      Int?
-  start_time DateTime          @default(now())
+  start_time DateTime?          @default(now())
   end_time   DateTime?
 
   student_answers StudentAnswer[]
 
-  @@id([student_id, quiz_id])
+  @@unique([student_id, quiz_id])
 }
 
 model StudentAnswer {
@@ -63,9 +64,9 @@ model StudentAnswer {
   options         String[]
   correct_options String[]
   student_answer  String[]
-  quiz_id         Int
-  student_id      Int
-  quiz            QuizAttempt @relation(fields: [quiz_id, student_id], references: [quiz_id, student_id])
+
+  quiz_attempt_id Int
+  quiz_attempt    QuizAttempt @relation(fields: [quiz_attempt_id], references: [id])
 }
 
 enum QuizStatus {

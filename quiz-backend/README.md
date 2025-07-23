@@ -81,25 +81,53 @@
 
 ---
 
+## QuizAttempts
+
+### `POST /api/attempts/creator/enroll?quizId=[quizId]&studentId=[studentId]`
+- Enrolls a student to quiz.
+- **Response:** Student object, quiz object, quiz attempt object.
+
+### `PATCH /api/attempts/status/:quizId`
+- Updates quiz attempt status to one of:
+  ENROLLED
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+  PASSED
+  FAILED
+  EXPIRED
+- **Body:** `{ status }`
+- **Response:** Updated quiz attempt object.
+
+### `POST /api/attempts/enroll?quizId=[quizId]`
+- Enrolls a user to quiz.
+- **Response:** Quiz object, quiz attempt object.
+
+### `PUT /api/attempts/:quizId`
+- Updates quiz attempt status to one of:
+  ENROLLED
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+  PASSED
+  FAILED
+  EXPIRED
+- **Body:** `{ 
+    status?: $Enums.QuizAttemptStatus | undefined
+    grade?: number | null | undefined
+    start_time?: Date
+    end_time?: Date
+    }`
+- **Response:** Updated quiz attempt object.
+
+---
+
 ## Answers
 
 ### `POST /api/answers`
 - Submits an answer to a question.
 - **Body:** `{ quizId, questionId, selectedOption }`
 - **Response:** Result object (correct/incorrect).
-
----
-
-## Users
-
-### `GET /api/users/:id`
-- Retrieves user profile.
-- **Response:** User object.
-
-### `PUT /api/users/:id`
-- Updates user profile.
-- **Body:** `{ username, email }`
-- **Response:** Updated user object.
 
 ---
 
