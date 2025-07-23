@@ -104,14 +104,7 @@
 - **Response:** Quiz object, quiz attempt object.
 
 ### `PUT /api/attempts/:quizId`
-- Updates quiz attempt status to one of:
-  ENROLLED
-  IN_PROGRESS
-  SUBMITTED
-  GRADED
-  PASSED
-  FAILED
-  EXPIRED
+- Updates quiz attempt.
 - **Body:** `{ 
     status?: $Enums.QuizAttemptStatus | undefined
     grade?: number | null | undefined
@@ -119,6 +112,18 @@
     end_time?: Date
     }`
 - **Response:** Updated quiz attempt object.
+
+### `POST /api/attempts/answer/:quizId`
+- Creates an answer to quiz question.
+- **Body:** `{ 
+    question_id: number;
+    student_answer: string[];
+    }`
+- **Response:** Created StudentAnswer object.
+
+### `GET /api/attempts/answers/:quizId`
+- Returns all answers of a particular quiz.
+- **Response:** StudentAnswer array.
 
 ---
 

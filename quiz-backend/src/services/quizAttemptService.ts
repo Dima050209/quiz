@@ -30,7 +30,6 @@ export const getAttempt = async (identifier: GetAttemptProps) => {
 };
 
 export const updateAttempt = async (attempt: UpdateAttempt) => {
-  console.log(attempt);
   if (attempt.id) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, student_id, quiz_id, ...data } = attempt;

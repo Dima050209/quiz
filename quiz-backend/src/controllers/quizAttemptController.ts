@@ -13,7 +13,7 @@ import { getQuizById } from "../services/quizService";
 import { QuizAttemptStatus } from "../../generated/prisma";
 import { CreateAnswer, CreateAnswerRequestBody } from "../types/answer";
 import { getQuestionById } from "../services/questionService";
-import { createAnswer } from "../services/answerService";
+import { createAnswer, getAttemptAnswers } from "../services/answerService";
 
 interface EnrollStudentQuery extends ParsedQs {
   quizId: string;
@@ -264,5 +264,47 @@ export const answerQuestion: RequestHandler<
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Could not create answer" });
+  }
+};
+
+interface GetAnswerstParams extends ParamsDictionary {
+  quizId: string;
+}
+
+export const getAnswers: RequestHandler<
+  GetAnswerstParams,
+  unknown,
+  {user: JwtUserPayload}
+> = async (req, res) => {
+  const { user } = req.body;
+  const { quizId } = req.params;
+
+  if (!quizId) {
+    return res.status(400).json({ message: "Quiz id not provided" });
+  }
+  const numQuizId = Number(quizId);
+  if (Number.isNaN(numQuizId)) {
+    return res.status(400).json({ message: "Invalid quiz id format" });
+  }
+
+  try {
+    const attempt = await getAttempt({
+      student_id: user.id,
+      quiz_id: numQuizId,
+    });
+    if (!attempt) {
+      return res.status(404).json({ message: "Quiz attempt not found" });
+    }
+    const quiz = await getQuizById(numQuizId);
+    if (!quiz) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+  
+    const answers = await getAttemptAnswers(attempt.id);
+
+    return res.status(200).json({ answers });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Could not find answers" });
   }
 };

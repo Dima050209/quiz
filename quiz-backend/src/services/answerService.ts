@@ -6,3 +6,11 @@ export const createAnswer = async (answer: CreateAnswer) => {
         data: answer
     })
 }
+
+export const getAttemptAnswers = async (attemptId: number) => {
+    return await prisma.studentAnswer.findMany({
+        where: {
+            quiz_attempt_id: attemptId
+        }
+    })
+}
