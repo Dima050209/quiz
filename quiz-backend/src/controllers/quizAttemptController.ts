@@ -256,6 +256,7 @@ export const answerQuestion: RequestHandler<
       correct_options: question.correct_options,
       student_answer: answer.student_answer,
       quiz_attempt_id: attempt.id,
+      grade: null
     };
 
     const createdAnswer = await createAnswer(fullAnswer);
