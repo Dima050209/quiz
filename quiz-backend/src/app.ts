@@ -7,6 +7,7 @@ import authRouter from "./routes/authRoutes";
 import quizRouter from "./routes/quizRoutes";
 import questionRouter from "./routes/questionRoutes";
 import attemptRouter from "./routes/quizAttemptRoutes";
+import answerRouter from "./routes/answerRoutes";
 import { redisClient } from "./config/redisClient";
 import cookiePdarser from "cookie-parser";
 
@@ -34,10 +35,15 @@ app.use(
 );
 app.use(logger("dev"));
 
-app.use("/user", userRouter);
-app.use("/auth", authRouter);
-app.use("/quizzes", quizRouter);
-app.use("/questions", questionRouter);
-app.use("/attempts", attemptRouter);
+const apiRouter = express.Router();
+
+apiRouter.use("/user", userRouter);
+apiRouter.use("/auth", authRouter);
+apiRouter.use("/quizzes", quizRouter);
+apiRouter.use("/questions", questionRouter);
+apiRouter.use("/attempts", attemptRouter);
+apiRouter.use("/answer", answerRouter);
+
+app.use("/api", apiRouter);
 
 export default app;

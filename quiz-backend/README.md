@@ -129,19 +129,11 @@
 
 ## Answers
 
-### `POST /api/answers`
-- Submits an answer to a question.
-- **Body:** `{ quizId, questionId, selectedOption }`
-- **Response:** Result object (correct/incorrect).
+### `GET /api/answer/:answerId`
+- Get answer by id
+- **Response:** Answer object.
 
 ---
 
-## Results
-
-### `GET /api/results/:userId`
-- Retrieves quiz results for a user.
-- **Response:** Array of result objects.
-
----
 
 > **Note:** All routes may require authentication via JWT in the `Authorization` header.

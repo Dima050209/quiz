@@ -14,3 +14,11 @@ export const getAttemptAnswers = async (attemptId: number) => {
         }
     })
 }
+
+export const getAnswerById = async (answerId: number) => {
+    return await prisma.studentAnswer.findUnique({
+        where: {
+            id: answerId
+        }
+    })
+}
