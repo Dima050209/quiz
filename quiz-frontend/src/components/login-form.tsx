@@ -6,6 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { login } from "@/api/auth";
+import axios from "axios";
+import { setToken } from "@/lib/tokenStorage";
 
 type LoginFields = {
   email: string;
@@ -19,11 +22,32 @@ export function LoginForm({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm<LoginFields>();
 
-  const onSubmit: SubmitHandler<LoginFields> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<LoginFields> = async (data) => {
+    try {
+      const response = await axios.post("/api/auth/login", {
+        email: data.email,
+        password: data.password,
+      });
+      console.log(response)
+
+      if (
+        response.status !== 200 ||
+        !response.data ||
+        !response.data.accessToken
+      ) {
+        throw new Error("Login failed");
+      }
+      setToken(response.data.accessToken);
+    } catch {
+      setError("root", {
+        type: "manual",
+        message: "Login failed",
+      });
+    }
   };
 
   return (
@@ -34,6 +58,7 @@ export function LoginForm({
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
+            {errors.root && <div className="text-red-600">{errors.root.message}</div>}
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
@@ -71,8 +96,12 @@ export function LoginForm({
                 )}
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Login
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Login..." : "Login"}
                 </Button>
                 {/* <Button variant="outline" className="w-full">
                   Login with Google
