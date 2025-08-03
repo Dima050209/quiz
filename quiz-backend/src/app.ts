@@ -9,7 +9,7 @@ import questionRouter from "./routes/questionRoutes";
 import attemptRouter from "./routes/quizAttemptRoutes";
 import answerRouter from "./routes/answerRoutes";
 import { redisClient } from "./config/redisClient";
-import cookiePdarser from "cookie-parser";
+import cookieParser from "cookie-parser";
 
 
 (async () => {
@@ -26,7 +26,7 @@ import cookiePdarser from "cookie-parser";
 const app = express();
 
 app.use(express.json());
-app.use(cookiePdarser());
+app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
