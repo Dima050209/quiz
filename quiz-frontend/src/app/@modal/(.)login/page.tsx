@@ -5,7 +5,6 @@ import React from 'react'
 export default function LoginModal() {
   return (
     <Modal>
-        intercepted
         <LoginForm />
     </Modal>
   )
