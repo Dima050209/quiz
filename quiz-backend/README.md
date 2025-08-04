@@ -11,6 +11,9 @@
 - Returns new access token.
 - **Response:** JWT token.
 
+### `POST /api/auth/logout`
+- Logout.
+- **Response:** Logout successful message.
 
 ---
 
