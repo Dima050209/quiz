@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Request, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import { JwtUserPayload, WithJwtUserPayload } from "../types/jwt";
@@ -14,18 +14,17 @@ import { QuizAttemptStatus } from "../../generated/prisma";
 import { CreateAnswer, CreateAnswerRequestBody } from "../types/answer";
 import { getQuestionById } from "../services/questionService";
 import { createAnswer, getAttemptAnswers } from "../services/answerService";
+import { RequestWithUser } from "../middleware/requireAuth";
 
 interface EnrollStudentQuery extends ParsedQs {
   quizId: string;
   studentId: string;
 }
 
-export const enrollStudent: RequestHandler<
-  unknown,
-  unknown,
-  { user: JwtUserPayload },
-  EnrollStudentQuery
-> = async (req, res) => {
+export const enrollStudent = async (
+  req: RequestWithUser<unknown, unknown, unknown, EnrollStudentQuery>,
+  res: Response
+) => {
   const { quizId, studentId } = req.query;
 
   if (!quizId) {
@@ -72,11 +71,7 @@ export const enrollStudent: RequestHandler<
   }
 };
 
-export const enrollSelf: RequestHandler<
-  unknown,
-  unknown,
-  { user: JwtUserPayload }
-> = async (req, res) => {
+export const enrollSelf = async (req: RequestWithUser, res: Response) => {
   const { quizId } = req.query;
   const user = req.body.user;
 
@@ -118,13 +113,16 @@ interface UpdateStatusParams extends ParamsDictionary {
   quizId: string;
 }
 
-export const updateAttemptStatus: RequestHandler<
-  UpdateStatusParams,
-  unknown,
-  WithJwtUserPayload<UpdateStatusBody>
-> = async (req, res) => {
-  const { status, user } = req.body;
+export const updateAttemptStatus = async (
+  req: RequestWithUser<UpdateStatusParams, unknown, UpdateStatusBody>,
+  res: Response
+) => {
+  const { status } = req.body;
   const { quizId } = req.params;
+  const user = req.user;
+  if (!user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
 
   if (!quizId) {
     return res.status(400).json({ message: "Quiz id not provided" });
@@ -171,14 +169,16 @@ interface UpdateAttemptParams extends ParamsDictionary {
   quizId: string;
 }
 
-export const updateAttempt: RequestHandler<
-  UpdateAttemptParams,
-  unknown,
-  WithJwtUserPayload<UpdateAttemptBody>
-> = async (req, res) => {
-  const { attemptUpd, user } = req.body;
+export const updateAttempt = async (
+  req: RequestWithUser<UpdateAttemptParams, unknown, UpdateAttemptBody>,
+  res: Response
+) => {
+  const { attemptUpd } = req.body;
   const { quizId } = req.params;
-
+  const user = req.user;
+  if (!user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   if (!quizId) {
     return res.status(400).json({ message: "Quiz id not provided" });
   }
@@ -217,12 +217,15 @@ interface AnswerQuestiontParams extends ParamsDictionary {
   quizId: string;
 }
 
-export const answerQuestion: RequestHandler<
-  AnswerQuestiontParams,
-  unknown,
-  WithJwtUserPayload<CreateAnswerRequestBody>
-> = async (req, res) => {
-  const { user, ...answer } = req.body;
+export const answerQuestion = async (
+  req: RequestWithUser<AnswerQuestiontParams, unknown, CreateAnswerRequestBody>,
+  res: Response
+) => {
+  const { ...answer } = req.body;
+  const user = req.user;
+  if (!user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   const { quizId } = req.params;
 
   if (!quizId) {
@@ -256,7 +259,7 @@ export const answerQuestion: RequestHandler<
       correct_options: question.correct_options,
       student_answer: answer.student_answer,
       quiz_attempt_id: attempt.id,
-      grade: null
+      grade: null,
     };
 
     const createdAnswer = await createAnswer(fullAnswer);
@@ -268,16 +271,18 @@ export const answerQuestion: RequestHandler<
   }
 };
 
-interface GetAnswerstParams extends ParamsDictionary {
+interface GetAnswersParams extends ParamsDictionary {
   quizId: string;
 }
 
-export const getAnswers: RequestHandler<
-  GetAnswerstParams,
-  unknown,
-  {user: JwtUserPayload}
-> = async (req, res) => {
-  const { user } = req.body;
+export const getAnswers = async (
+  req: RequestWithUser<GetAnswersParams>,
+  res: Response
+) => {
+  const user = req.user;
+  if (!user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   const { quizId } = req.params;
 
   if (!quizId) {
@@ -300,7 +305,7 @@ export const getAnswers: RequestHandler<
     if (!quiz) {
       return res.status(404).json({ message: "Quiz not found" });
     }
-  
+
     const answers = await getAttemptAnswers(attempt.id);
 
     return res.status(200).json({ answers });

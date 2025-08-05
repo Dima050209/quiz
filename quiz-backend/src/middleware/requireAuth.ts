@@ -1,13 +1,27 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Request } from "express";
 import jwt from "jsonwebtoken";
 import env from "../config/validateEnv";
-import { isJwtUserPayload } from "../types/jwt";
+import { isJwtUserPayload, JwtUserPayload } from "../types/jwt";
+
+export interface RequestWithUser<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Params = Record<string, any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ResBody = any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ReqBody = any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ReqQuery = any
+> extends Request<Params, ResBody, ReqBody, ReqQuery> {
+  user?: JwtUserPayload;
+}
 
 const accessSecret = env.ACCESS_SECRET;
 
 export const requireAuth: RequestHandler = (req, res, next) => {
   const authHeader = req.header("Authorization");
   const accessToken = authHeader?.split(" ")[1];
+  console.log("'"+accessToken+ "'");
 
   if (!accessToken) {
     return res.status(401).json({ message: "Access token not provided" });
@@ -17,7 +31,8 @@ export const requireAuth: RequestHandler = (req, res, next) => {
     if (!isJwtUserPayload(payload)) {
       return res.status(401).json({ message: "Invalid access token" });
     }
-    req.body.user = payload;
+    console.log(payload);
+    (req as unknown as RequestWithUser).user = payload;
     next();
   } catch (error) {
     console.error("JWT verification failed:", error);

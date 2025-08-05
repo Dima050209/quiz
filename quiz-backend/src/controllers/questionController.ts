@@ -1,13 +1,13 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import {
   getQuestionById,
   updateQuestion as updQuestion,
   deleteQuestion as dltQuestion,
 } from "../services/questionService";
-import { WithJwtUserPayload } from "../types/jwt";
 import { UpdateQuestion } from "../types/question";
 import { getQuizById } from "../services/quizService";
+import { RequestWithUser } from "../middleware/requireAuth";
 
 interface GetQuestionParams extends ParamsDictionary {
   questionId: string;
@@ -57,12 +57,15 @@ export const getQuestionTask: RequestHandler<GetQuestionParams> = async (
   }
 };
 
-export const updateQuestion: RequestHandler<
-  unknown,
-  unknown,
-  WithJwtUserPayload<UpdateQuestion>
-> = async (req, res) => {
-  const { user, ...data } = req.body;
+export const updateQuestion = async (
+  req: RequestWithUser & { body: UpdateQuestion },
+  res: Response
+) => {
+  const { ...data } = req.body;
+  const user = req.user;
+  if (!user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   try {
     const question = await getQuestionById(data.id);
     if (!question) {
@@ -85,18 +88,20 @@ interface DeleteQuestionParams extends ParamsDictionary {
   questionId: string;
 }
 
-export const deleteQuestion: RequestHandler<
-  DeleteQuestionParams,
-  unknown,
-  WithJwtUserPayload<UpdateQuestion>
-> = async (req, res) => {
+export const deleteQuestion = async (
+  req: RequestWithUser & { params: DeleteQuestionParams },
+  res: Response
+) => {
   const { questionId } = req.params;
 
   const numQuestionId = Number(questionId);
   if (Number.isNaN(numQuestionId)) {
     return res.status(400).json({ message: "Invalid question id" });
   }
-  const user = req.body.user;
+  const user = req.user;
+  if (!user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   try {
     const question = await getQuestionById(numQuestionId);
     if (!question) {

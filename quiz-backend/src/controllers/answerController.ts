@@ -1,19 +1,18 @@
-import { RequestHandler } from "express";
+import { Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
-import { JwtUser } from "../types/jwt";
 import { getAnswerById } from "../services/answerService";
 import { getAttempt } from "../services/quizAttemptService";
+import { RequestWithUser } from "../middleware/requireAuth";
 
 interface GetAnswerParams extends ParamsDictionary {
   answerId: string;
 }
 
-export const getAnswer: RequestHandler<
-  GetAnswerParams,
-  unknown,
-  { user: JwtUser }
-> = async (req, res) => {
-  const { user } = req.body;
+export const getAnswer = async (req: RequestWithUser & {params: GetAnswerParams}, res: Response) => {
+  const user = req.user;
+  if(!user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   const { answerId } = req.params;
 
   if (!answerId) {

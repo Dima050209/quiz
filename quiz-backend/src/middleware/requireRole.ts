@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import env from "../config/validateEnv";
 import { UserRole } from "../../generated/prisma";
 import { isJwtUserPayload } from "../types/jwt";
+import { RequestWithUser } from "./requireAuth";
 
 const secret = env.ACCESS_SECRET;
 
@@ -17,7 +18,7 @@ export const requireRole = (...roles: UserRole[]) => {
     try {
       const payload = jwt.verify(token, secret);
       if (isJwtUserPayload(payload) && roles.includes(payload.role)) {
-        req.body.user = payload;
+        (req as unknown as RequestWithUser).user = payload;
         return next();
       }
       return res.status(403).json({ message: "Not authorized" });
