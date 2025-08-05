@@ -1,18 +1,6 @@
-export function setToken(token: string) {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('auth_token', token);
-  }
-}
+import { cookies } from 'next/headers';
 
-export function getToken(): string | null {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('auth_token');
-  }
-  return null;
-}
-
-export function removeToken() {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('auth_token');
-  }
+export async function getTokenFromCookie() {
+  const token = (await cookies()).get('auth_token')?.value;
+  return token || null;
 }

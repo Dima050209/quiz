@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { login } from "@/api/auth";
 import axios from "axios";
-import { setToken } from "@/lib/tokenStorage";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { setUserInfo } from "@/lib/state/user/userSlice";
 
 type LoginFields = {
   email: string;
@@ -26,22 +26,26 @@ export function LoginForm({
     formState: { errors, isSubmitting },
   } = useForm<LoginFields>();
 
+  // const dispatch = useAppDispatch();
+
   const onSubmit: SubmitHandler<LoginFields> = async (data) => {
     try {
       const response = await axios.post("/api/auth/login", {
         email: data.email,
         password: data.password,
       });
-      console.log(response)
 
       if (
-        response.status !== 200 ||
-        !response.data ||
-        !response.data.accessToken
+        response.status !== 200 
+        // ||
+        // !response.data ||
+        // !response.data.accessToken
       ) {
         throw new Error("Login failed");
       }
-      setToken(response.data.accessToken);
+      // setToken(response.data.accessToken);
+
+      // dispatch(setUserInfo(response.data));
     } catch {
       setError("root", {
         type: "manual",

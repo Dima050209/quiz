@@ -10,3 +10,11 @@ export const login = async(email: string, password: string) => {
         console.log(error);
     }
 }
+
+export const logout = async() => {
+    try {
+        return await axios.post(API_BASE_URL + '/auth/logout');
+    } catch (error) {
+        console.log(error);
+    }
+}
