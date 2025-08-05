@@ -1,6 +1,5 @@
 import { RequestHandler, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
-import { WithJwtUserPayload } from "../types/jwt";
 import { CreateQuiz, RawQuiz, UpdateQuiz } from "../types/quiz";
 import {
   createQuiz as addQuiz,
