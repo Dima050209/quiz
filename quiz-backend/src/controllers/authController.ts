@@ -12,7 +12,7 @@ const refreshSecret = env.REFRESH_SECRET;
 
 export const refreshAccessToken: RequestHandler = async (req, res) => {
   const refreshToken = req.cookies.refresh_token;
-
+  console.log(refreshToken);
   if (!refreshToken) {
     return res.status(401).json({ message: "Token not provided" });
   }
@@ -81,7 +81,7 @@ export const login: RequestHandler<unknown, unknown, LoginBody> = async (
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-      path: "/auth",
+      path: "/",
     });
 
     const redisKey = generateRefreshKey(user.id, refreshToken);

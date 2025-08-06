@@ -9,6 +9,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { setUserInfo } from "@/lib/state/user/userSlice";
+import { login, refresh } from "@/lib/api/auth";
+import { currentUser } from "@/lib/api/user";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { setToken } from "@/lib/tokenStorage";
 
 type LoginFields = {
   email: string;
@@ -19,6 +24,27 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      let user = await currentUser();
+      if (user?.statusText === "OK") {
+        router.replace("/");
+      } else {
+        const refreshRes = await refresh();
+        if(refreshRes?.statusText === "OK") {
+          setToken(refreshRes.data.accessToken);
+          user = await currentUser();
+        }
+        if (user) {
+          router.replace("/");
+        }
+      }
+    };
+    fetchUser();
+  }, [router]);
+
   const {
     register,
     handleSubmit,
@@ -30,27 +56,10 @@ export function LoginForm({
 
   const onSubmit: SubmitHandler<LoginFields> = async (data) => {
     try {
-      const response = await axios.post("/api/auth/login", {
-        email: data.email,
-        password: data.password,
-      });
-
-      if (
-        response.status !== 200 
-        // ||
-        // !response.data ||
-        // !response.data.accessToken
-      ) {
-        throw new Error("Login failed");
-      }
-      // setToken(response.data.accessToken);
-
-      // dispatch(setUserInfo(response.data));
-    } catch {
-      setError("root", {
-        type: "manual",
-        message: "Login failed",
-      });
+      await login(data.email, data.password);
+      const user = await currentUser();
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -62,7 +71,9 @@ export function LoginForm({
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {errors.root && <div className="text-red-600">{errors.root.message}</div>}
+            {errors.root && (
+              <div className="text-red-600">{errors.root.message}</div>
+            )}
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
