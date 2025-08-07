@@ -9,11 +9,9 @@ const secret = env.ACCESS_SECRET;
 
 export const requireRole = (...roles: UserRole[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const header = req.header("Authorization") || "";
-    const token = header.split(" ")[1];
-
+    const token = req.cookies.access_token;
     if (!token) {
-      return res.status(401).json({ message: "Token not provided" });
+      return res.status(401).json({ message: "Access token not provided" });
     }
     try {
       const payload = jwt.verify(token, secret);

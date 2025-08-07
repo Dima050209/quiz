@@ -12,7 +12,6 @@ const refreshSecret = env.REFRESH_SECRET;
 
 export const refreshAccessToken: RequestHandler = async (req, res) => {
   const refreshToken = req.cookies.refresh_token;
-  console.log(refreshToken);
   if (!refreshToken) {
     return res.status(401).json({ message: "Token not provided" });
   }
@@ -33,7 +32,14 @@ export const refreshAccessToken: RequestHandler = async (req, res) => {
       role: payload.role,
     };
     const accessToken = generateAccessToken(accessPayload);
-    return res.status(200).json({ accessToken });
+
+    res.cookie("access_token", accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
+    });
+    return res.status(200).json({ message: "Access token has been successfully created" });
   } catch (err) {
     console.log(err);
     if (err instanceof jwt.TokenExpiredError) {
@@ -77,17 +83,25 @@ export const login: RequestHandler<unknown, unknown, LoginBody> = async (
     const refreshToken = generateRefreshToken(tokenUserInfo);
     const accessToken = generateAccessToken(tokenUserInfo);
 
+    const redisKey = generateRefreshKey(user.id, refreshToken);
+    await redisClient.set(redisKey, "valid", { EX: 60 * 60 * 24 * 7 });
+
     res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/api/auth",
+    });
+
+    res.cookie("access_token", accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
       path: "/",
     });
 
-    const redisKey = generateRefreshKey(user.id, refreshToken);
-    await redisClient.set(redisKey, "valid", { EX: 60 * 60 * 24 * 7 });
+    return res.status(200).json({ message: "Successfully logged in" });
 
-    return res.status(200).json({ accessToken });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Could not login" });
@@ -113,6 +127,8 @@ export const logout: RequestHandler = async (req, res) => {
       console.warn(`Refresh token key not found: ${refreshKey}`);
     }
     res.clearCookie("refresh_token", { path: "/auth" });
+
+    res.clearCookie("access_token", { path: "/" });
 
     res.status(200).json({ message: "Logout successful" });
   } catch (err) {

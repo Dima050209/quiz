@@ -19,9 +19,7 @@ export interface RequestWithUser<
 const accessSecret = env.ACCESS_SECRET;
 
 export const requireAuth: RequestHandler = (req, res, next) => {
-  const authHeader = req.header("Authorization");
-  const accessToken = authHeader?.split(" ")[1];
-  console.log("'"+accessToken+ "'");
+  const accessToken = req.cookies.access_token;
 
   if (!accessToken) {
     return res.status(401).json({ message: "Access token not provided" });
@@ -31,7 +29,6 @@ export const requireAuth: RequestHandler = (req, res, next) => {
     if (!isJwtUserPayload(payload)) {
       return res.status(401).json({ message: "Invalid access token" });
     }
-    console.log(payload);
     (req as unknown as RequestWithUser).user = payload;
     next();
   } catch (error) {
