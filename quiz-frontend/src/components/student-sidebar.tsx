@@ -1,7 +1,5 @@
 import * as React from "react"
 
-import { SearchForm } from "@/components/search-form"
-import { VersionSwitcher } from "@/components/version-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -15,38 +13,12 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import UserdataBadge from "./ui/userdata-badge"
+import { DashboardRoutes } from "@/lib/routes"
+import RelativeLink from "./ui/relative-link"
+import Link from "next/link"
 
-const data = {
-  navMain: [
-    {
-      title: "Quizes",
-      url: "#",
-      items: [
-        {
-          title: "My quizes",
-          url: "#",
-        },
-        {
-          title: "All quizes",
-          url: "#",
-          isActive: true
-        },
-      ],
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      items: [
-        {
-          title: "My analytics",
-          url: "#",
-        },
-      ],
-    },
-  ],
-}
 
-export function StudentSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function StudentSidebar({routes, ...props }: {routes: DashboardRoutes} & React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader className="border-b">
@@ -54,15 +26,15 @@ export function StudentSidebar({ ...props }: React.ComponentProps<typeof Sidebar
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
-        {data.navMain.map((item) => (
+        {routes.navMain.map((item) => (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
+                    <SidebarMenuButton asChild isActive={item.isActive} variant='outline'>
+                      <Link href={item.url}>{item.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
