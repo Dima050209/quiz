@@ -46,8 +46,7 @@ export const register: RequestHandler<unknown, unknown, RegisterBody> = async (
 };
 
 export const currentUser: RequestHandler = async (req, res) => {
-  const authHeader = req.header("Authorization");
-  const accessToken = authHeader?.split(" ")[1];
+  const accessToken = req.cookies.access_token;
 
   if (!accessToken) {
     return res.status(401).json({ message: "Access token not provided" });
