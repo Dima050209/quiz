@@ -57,7 +57,7 @@ export default function QuizModal() {
           <CardHeader>
             <CardTitle>{data.quiz.title}</CardTitle>
           </CardHeader>
-          <CardContent>{data.quiz.description}</CardContent>
+          <CardContent className="max-h-100 overflow-y-auto">{data.quiz.description}</CardContent>
           <CardFooter>
             <Button>Start</Button>
           </CardFooter>
