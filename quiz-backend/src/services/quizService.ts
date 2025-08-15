@@ -12,10 +12,10 @@ export const getUserQuizzes = async (userId: number) => {
       student_id: userId
     },
     select: {
-      id: true
+      quiz_id: true
     }
   });
-  const quizIds = userAttempts.map(a => a.id);
+  const quizIds = userAttempts.map(a => a.quiz_id);
   return await prisma.quiz.findMany({
     where: {
       id: { in: quizIds}
