@@ -20,7 +20,6 @@ const accessSecret = env.ACCESS_SECRET;
 
 export const requireAuth: RequestHandler = (req, res, next) => {
   const accessToken = req.cookies.access_token;
-
   if (!accessToken) {
     return res.status(401).json({ message: "Access token not provided" });
   }

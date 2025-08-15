@@ -9,8 +9,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { setUserInfo } from "@/lib/state/user/userSlice";
-import { login, refresh } from "@/lib/api/auth";
-import { currentUser } from "@/lib/api/user";
+import { login, refresh } from "@/lib/api-client/auth";
+import { currentUser } from "@/lib/api-client/user";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { setToken } from "@/lib/tokenStorage";
@@ -34,7 +34,6 @@ export function LoginForm({
       } else {
         const refreshRes = await refresh();
         if(refreshRes?.statusText === "OK") {
-          setToken(refreshRes.data.accessToken);
           user = await currentUser();
         }
         if (user) {

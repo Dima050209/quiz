@@ -15,7 +15,6 @@ export const refreshAccessToken: RequestHandler = async (req, res) => {
   if (!refreshToken) {
     return res.status(401).json({ message: "Token not provided" });
   }
-
   try {
     const payload = jwt.verify(refreshToken, refreshSecret) as JwtUserPayload;
     if (!isJwtUserPayload(payload)) {
@@ -35,11 +34,13 @@ export const refreshAccessToken: RequestHandler = async (req, res) => {
 
     res.cookie("access_token", accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       path: "/",
     });
-    return res.status(200).json({ message: "Access token has been successfully created" });
+    return res
+      .status(200)
+      .json({accessToken});
   } catch (err) {
     console.log(err);
     if (err instanceof jwt.TokenExpiredError) {
@@ -88,20 +89,19 @@ export const login: RequestHandler<unknown, unknown, LoginBody> = async (
 
     res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      path: "/api/auth",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
     });
 
     res.cookie("access_token", accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       path: "/",
     });
 
     return res.status(200).json({ message: "Successfully logged in" });
-
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Could not login" });
@@ -110,7 +110,6 @@ export const login: RequestHandler<unknown, unknown, LoginBody> = async (
 
 export const logout: RequestHandler = async (req, res) => {
   const refreshToken = req.cookies.refresh_token;
-
   if (!refreshToken) {
     return res.status(401).json({ message: "Token not provided" });
   }
@@ -126,9 +125,9 @@ export const logout: RequestHandler = async (req, res) => {
     if (deleted === 0) {
       console.warn(`Refresh token key not found: ${refreshKey}`);
     }
-    res.clearCookie("refresh_token", { path: "/auth" });
+    res.clearCookie("refresh_token");
 
-    res.clearCookie("access_token", { path: "/" });
+    res.clearCookie("access_token");
 
     res.status(200).json({ message: "Logout successful" });
   } catch (err) {

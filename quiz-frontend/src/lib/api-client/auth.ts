@@ -1,6 +1,4 @@
 import axios from "axios";
-import { setToken } from "../tokenStorage";
-// import env from "@/config/validateEnv";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -14,7 +12,6 @@ export const login = async (email: string, password: string) => {
     if (response.statusText !== "OK" || !response.data.accessToken) {
       throw new Error("Failed to login"); 
     }
-    setToken(response.data.accessToken);
   } catch (error) {
     console.log(error);
   }

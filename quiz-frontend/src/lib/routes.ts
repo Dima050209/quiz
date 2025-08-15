@@ -10,15 +10,15 @@ export const studentRoutes = {
       ],
     },
     {
-      title: "Quizes",
+      title: "Quizzes",
       items: [
         {
-          title: "My quizes",
-          url: "/dashboard/student/my-quizes",
+          title: "My quizzes",
+          url: "/dashboard/student/my-quizzes",
         },
         {
-          title: "All quizes",
-          url: "/dashboard/student/quizes",
+          title: "All quizzes",
+          url: "/dashboard/student/quizzes",
           isActive: true
         },
       ],
