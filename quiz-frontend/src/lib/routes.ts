@@ -5,7 +5,7 @@ export const studentRoutes = {
       items: [
         {
           title: "Profile",
-          url: "/dashboard/student/my-quizes",
+          url: "/dashboard/student/",
         },
       ],
     },
@@ -28,7 +28,7 @@ export const studentRoutes = {
       items: [
         {
           title: "My analytics",
-          url: "#",
+          url: "/dashboard/my-analytics",
         },
       ],
     },

@@ -1,10 +1,10 @@
-import { RequestHandler, Request, Response } from "express";
+import { Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
-import { JwtUserPayload, WithJwtUserPayload } from "../types/jwt";
 import {
   createAttempt,
   getAttempt,
+  getUserAttempts,
   updateAttempt as updAttempt,
 } from "../services/quizAttemptService";
 import { CreateAttempt, UpdateAttempt } from "../types/quizAttempt";
@@ -15,6 +15,17 @@ import { CreateAnswer, CreateAnswerRequestBody } from "../types/answer";
 import { getQuestionById } from "../services/questionService";
 import { createAnswer, getAttemptAnswers } from "../services/answerService";
 import { RequestWithUser } from "../middleware/requireAuth";
+
+export const myAttempts = async (req: RequestWithUser, res: Response) => {
+    const user = req.body.user;
+    try {
+      const attempts = await getUserAttempts(user.id);
+      return res.status(200).json({ quizAttempts: attempts});
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Could not retrieve student's quizzes" });
+    }
+}
 
 interface EnrollStudentQuery extends ParsedQs {
   quizId: string;

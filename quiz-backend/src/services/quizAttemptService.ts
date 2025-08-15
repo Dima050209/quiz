@@ -54,3 +54,9 @@ export const updateAttempt = async (attempt: UpdateAttempt) => {
   }
   throw new Error("Neither attempt id or student_id + quiz_id provided");
 };
+
+export const getUserAttempts = async (userId: number) => {
+  return prisma.quizAttempt.findMany({where: {
+    student_id: userId
+  }});
+}

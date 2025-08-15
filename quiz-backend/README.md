@@ -39,6 +39,10 @@
 - Retrieves all quizzes.
 - **Response:** Array of quiz objects.
 
+### `GET /api/quizzes/my-quizzes`
+- Retrieves all user's quizzes.
+- **Response:** Array of quiz objects.
+
 ### `POST /api/quizzes`
 - Creates a new quiz.
 - **Body:** `{ title, description, questions }`
@@ -85,6 +89,10 @@
 ---
 
 ## QuizAttempts
+
+### `GET /api/attempts/`
+- Returns all user's attempts.
+- **Response:** QuizAttempt array.
 
 ### `POST /api/attempts/creator/enroll?quizId=[quizId]&studentId=[studentId]`
 - Enrolls a student to quiz.

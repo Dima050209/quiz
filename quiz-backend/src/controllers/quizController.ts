@@ -6,6 +6,7 @@ import {
   getQuizById,
   updateQuiz as updQuiz,
   getAllQuizzes as allQuizzes,
+  getUserQuizzes,
 } from "../services/quizService";
 import { getQuizQuestions as quizQuestions } from "../services/questionService";
 import { RequestWithUser } from "../middleware/requireAuth";
@@ -15,6 +16,20 @@ const questionsPerRequest = 5;
 export const getAllQuizzes: RequestHandler = async (req, res) => {
   try {
     const quizzes = await allQuizzes();
+    return res.status(200).json({ quizzes });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Error while retrieving quizzes" });
+  }
+};
+
+export const getMyQuizzes = async (req: RequestWithUser, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  try {
+    const quizzes = await getUserQuizzes(user.id);
     return res.status(200).json({ quizzes });
   } catch (error) {
     console.log(error);

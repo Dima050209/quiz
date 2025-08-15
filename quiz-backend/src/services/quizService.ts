@@ -6,6 +6,23 @@ export const getAllQuizzes = async () => {
   return await prisma.quiz.findMany();
 }
 
+export const getUserQuizzes = async (userId: number) => {
+  const userAttempts = await prisma.quizAttempt.findMany({
+    where: {
+      student_id: userId
+    },
+    select: {
+      id: true
+    }
+  });
+  const quizIds = userAttempts.map(a => a.id);
+  return await prisma.quiz.findMany({
+    where: {
+      id: { in: quizIds}
+    }
+  });
+}
+
 export const getQuizById = async (id: number) => {
   return await prisma.quiz.findUnique({
     where: {
