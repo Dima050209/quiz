@@ -72,7 +72,6 @@ export const myQuizzes = async () => {
     if (res.statusText !== "OK") {
       throw new Error("Failed to retrieve quizzes");
     }
-    console.log(res.data)
     return res.data.quizzes as Quiz[];
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 401) {

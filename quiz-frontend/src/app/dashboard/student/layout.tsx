@@ -1,3 +1,4 @@
+"use client"
 import { StudentSidebar } from "@/components/student-sidebar";
 import {
   Breadcrumb,
@@ -12,9 +13,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { studentRoutes } from "@/lib/routes";
+import { DashboardRoute, DashboardRoutes, makeRouteActive, studentRoutes } from "@/lib/routes";
 import { Separator } from "@radix-ui/react-separator";
-import React from "react";
+import React, { useState } from "react";
 
 export default function StudentLayout({
   children,
@@ -22,10 +23,16 @@ export default function StudentLayout({
   modal: React.ReactNode;
   children: React.ReactNode;
 }>) {
+  const [routes, setRoutes] = useState<DashboardRoutes>(studentRoutes);
+  const setActiveRoute = (route: DashboardRoute) => {
+    const newRoutes = makeRouteActive(routes, route);
+    setRoutes(newRoutes);
+    console.log(newRoutes.navMain)
+  }
   return (
     <div>
       <SidebarProvider>
-        <StudentSidebar routes={studentRoutes} />
+        <StudentSidebar routes={routes} setActiveRoute={setActiveRoute}/>
 
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -35,7 +42,7 @@ export default function StudentLayout({
               className="mr-2 data-[orientation=vertical]:h-4"
             />
             <Breadcrumb>
-                {studentRoutes.navMain.map((genRoute, idx) => {
+                {routes.navMain.map((genRoute, idx) => {
                   const activeItem = genRoute.items.filter((item) => item.isActive);
                   if (activeItem.length > 0) {
                     return (
