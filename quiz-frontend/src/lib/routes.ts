@@ -21,7 +21,6 @@ export const studentRoutes: DashboardRoutes = {
         {
           title: "All quizzes",
           url: "/dashboard/student/quizzes",
-          isActive: true,
         },
       ],
     },
@@ -37,14 +36,13 @@ export const studentRoutes: DashboardRoutes = {
   ],
 };
 
-export const makeRouteActive = (routes: DashboardRoutes, route: DashboardRoute) => {
-  const routesCopy: DashboardRoutes = structuredClone(routes);
-  routesCopy.navMain.forEach((genRoute) => {
+export const makeRouteActive = (route: string) => {
+  studentRoutes.navMain.forEach((genRoute) => {
     genRoute.items.forEach((item) => {
-     item.isActive = item.url === route.url;
+     item.isActive = item.url === route;
     })
   });
-  return routesCopy;
+  return studentRoutes;
 };
 
 export type DashboardRoute = {

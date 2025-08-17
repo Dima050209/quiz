@@ -13,12 +13,11 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import UserdataBadge from "./ui/userdata-badge"
-import { DashboardRoute, DashboardRoutes, makeRouteActive } from "@/lib/routes"
-import RelativeLink from "./ui/relative-link"
+import { DashboardRoutes } from "@/lib/routes"
 import Link from "next/link"
 
 
-export function StudentSidebar({routes, setActiveRoute, ...props }: {routes: DashboardRoutes, setActiveRoute: (route: DashboardRoute) => void} & React.ComponentProps<typeof Sidebar>) {
+export function StudentSidebar({routes, setActiveRoute, ...props }: {routes: DashboardRoutes, setActiveRoute: (routeUrl: string) => void} & React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader className="border-b">
@@ -33,7 +32,7 @@ export function StudentSidebar({routes, setActiveRoute, ...props }: {routes: Das
               <SidebarMenu>
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive} variant='outline' onClick={() => setActiveRoute(item)}>
+                    <SidebarMenuButton asChild isActive={item.isActive} variant='outline' onClick={() => setActiveRoute(item.url)}>
                       <Link href={item.url}>{item.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
