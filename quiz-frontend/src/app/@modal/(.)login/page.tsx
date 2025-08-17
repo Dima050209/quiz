@@ -1,11 +1,10 @@
-import { LoginForm } from '@/components/login-form'
-import Modal from '@/components/modal'
-import React from 'react'
+import { LoginForm } from "@/components/login-form";
+import Modal from "@/components/modal";
 
-export default function LoginModal() {
+export default async function LoginModal() {
   return (
     <Modal>
-        <LoginForm />
+      <LoginForm />
     </Modal>
-  )
+  );
 }

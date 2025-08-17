@@ -6,14 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitHandler, useForm } from "react-hook-form";
-import axios from "axios";
-import { useAppDispatch } from "@/lib/store/hooks";
-import { setUserInfo } from "@/lib/state/user/userSlice";
 import { login, refresh } from "@/lib/api-client/auth";
 import { currentUser } from "@/lib/api-client/user";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { setToken } from "@/lib/tokenStorage";
 
 type LoginFields = {
   email: string;
@@ -30,14 +26,14 @@ export function LoginForm({
     const fetchUser = async () => {
       let user = await currentUser();
       if (user?.statusText === "OK") {
-        router.replace("/");
+        router.replace("/dashboard");
       } else {
         const refreshRes = await refresh();
         if(refreshRes?.statusText === "OK") {
           user = await currentUser();
         }
         if (user) {
-          router.replace("/");
+          router.replace("/dashboard");
         }
       }
     };
@@ -51,12 +47,13 @@ export function LoginForm({
     formState: { errors, isSubmitting },
   } = useForm<LoginFields>();
 
-  // const dispatch = useAppDispatch();
-
   const onSubmit: SubmitHandler<LoginFields> = async (data) => {
     try {
       await login(data.email, data.password);
       const user = await currentUser();
+       if (user) {
+          router.replace("/dashboard");
+        }
     } catch (error) {
       console.log(error);
     }
