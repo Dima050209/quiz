@@ -7,16 +7,17 @@ import { ReactNode } from "react";
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const queryClient = getQueryClient();
 
-  let user: User | null = null;
-  try {
-    user = await queryClient.fetchQuery<User>({
-      queryKey: ["user"],
-      queryFn: currentUser
-    });
-  } catch {
-    return redirect('/');
-  }
+  // let user: User | null = null;
+  // try {
+  //   user = await queryClient.fetchQuery<User>({
+  //     queryKey: ["user"],
+  //     queryFn: currentUser
+  //   });
+  // } catch {
+  //   return redirect('/');
+  // }
 
-  return user ? <>{children}</> : redirect('/');
+  // return user ? <>{children}</> : redirect('/');
+  return<>{children}</> ;
 }
 

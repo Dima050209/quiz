@@ -21,7 +21,7 @@ export const allQuizzes = async () => {
     }
     return res.data.quizzes as Quiz[];
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
+    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
       try {
         const refreshToken = cookieStore.get("refresh_token")?.value;
         const refreshAttempt = await axios.get(API_BASE_URL + "/auth/refresh", {
@@ -74,7 +74,7 @@ export const myQuizzes = async () => {
     }
     return res.data.quizzes as Quiz[];
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
+    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
       try {
         const refreshToken = cookieStore.get("refresh_token")?.value;
         const refreshAttempt = await axios.get(API_BASE_URL + "/auth/refresh", {

@@ -9,7 +9,7 @@ export const creatorRoutes: DashboardRoutes = {
       items: [
         {
           title: "Profile",
-          url: "/dashboard/student/",
+          url: "/dashboard/creator/",
         },
       ],
     },
@@ -18,11 +18,11 @@ export const creatorRoutes: DashboardRoutes = {
       items: [
         {
           title: "My quizzes",
-          url: "/dashboard/student/my-quizzes",
+          url: "/dashboard/creator/my-quizzes",
         },
         {
           title: "All quizzes",
-          url: "/dashboard/student/quizzes",
+          url: "/dashboard/creator/quizzes",
         },
       ],
     },
@@ -31,7 +31,7 @@ export const creatorRoutes: DashboardRoutes = {
       items: [
         {
           title: "My analytics",
-          url: "/dashboard/my-analytics",
+          url: "/dashboard/creator/my-analytics",
         },
       ],
     },

@@ -31,7 +31,7 @@ export const studentRoutes: DashboardRoutes = {
       items: [
         {
           title: "My analytics",
-          url: "/dashboard/my-analytics",
+          url: "/dashboard/student/my-analytics",
         },
       ],
     },

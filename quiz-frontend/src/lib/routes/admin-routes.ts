@@ -9,20 +9,29 @@ export const adminRoutes: DashboardRoutes = {
       items: [
         {
           title: "Profile",
-          url: "/dashboard/student/",
+          url: "/dashboard/admin/",
         },
       ],
+    },
+    {
+      title: "Users",
+      items: [
+        {
+          title: "All Users",
+          url: "/dashboard/admin/all-users"
+        }
+      ]
     },
     {
       title: "Quizzes",
       items: [
         {
           title: "My quizzes",
-          url: "/dashboard/student/my-quizzes",
+          url: "/dashboard/admin/my-quizzes",
         },
         {
           title: "All quizzes",
-          url: "/dashboard/student/quizzes",
+          url: "/dashboard/admin/quizzes",
         },
       ],
     },
@@ -31,7 +40,7 @@ export const adminRoutes: DashboardRoutes = {
       items: [
         {
           title: "My analytics",
-          url: "/dashboard/my-analytics",
+          url: "/dashboard/admin/my-analytics",
         },
       ],
     },
