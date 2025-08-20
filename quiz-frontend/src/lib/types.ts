@@ -25,9 +25,13 @@ export type Quiz = {
 //   completedAt?: string; // ISO date
 // };
 
+export const roles = ["STUDENT", "CREATOR", "ADMIN"] as const;
+
+export type Role = typeof roles[number];
+
 export type User = {
   id: number;
   name: string;
   email: string;
-  role: "STUDENT" | "CREATOR" | "ADMIN";
+  role: Role;
 };
