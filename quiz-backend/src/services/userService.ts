@@ -10,6 +10,10 @@ export const createUser = async (user: NewUser): Promise<User> => {
   return createdUser;
 };
 
+export const allUsers = async (): Promise<User[]> => {
+  return prisma.user.findMany();
+}
+
 export const getUserByEmail = async (email: string): Promise<User | null> => {
   const user = await prisma.user.findUnique({
     where: {

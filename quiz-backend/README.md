@@ -23,6 +23,10 @@
 - Returns current user.
 - **Response:** User object.
 
+### `GET /api/user/all-users`
+- Returns list of all users.
+- **Response:** User[].
+
 ### `GET /api/user/:userId`
 - Returns user by id.
 - **Response:** User object.
