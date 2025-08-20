@@ -21,10 +21,12 @@ import { Separator } from "@radix-ui/react-separator";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-export default function CreatorLayout({
+export default function AdminLayout({
   children,
+  modal
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   const path = usePathname();
   const [routes, setRoutes] = useState<DashboardRoutes>(gotoAdminRoute(path));
@@ -75,6 +77,7 @@ export default function CreatorLayout({
               })}
             </Breadcrumb>
           </header>
+          {modal}
           {children}
         </SidebarInset>
       </SidebarProvider>
