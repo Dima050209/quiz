@@ -1,5 +1,7 @@
 "use client";
 
+import { DashboardRoutes, makeRouteActive } from "./routes";
+
 export const studentRoutes: DashboardRoutes = {
   navMain: [
     {
@@ -36,24 +38,4 @@ export const studentRoutes: DashboardRoutes = {
   ],
 };
 
-export const makeRouteActive = (route: string) => {
-  studentRoutes.navMain.forEach((genRoute) => {
-    genRoute.items.forEach((item) => {
-     item.isActive = item.url === route;
-    })
-  });
-  return studentRoutes;
-};
-
-export type DashboardRoute = {
-  title: string;
-  url: string;
-  isActive?: boolean;
-};
-
-export type DashboardRoutes = {
-  navMain: {
-    title: string;
-    items: DashboardRoute[];
-  }[];
-};
+export const gotoStudentRoute = (route: string) => makeRouteActive(studentRoutes, route);

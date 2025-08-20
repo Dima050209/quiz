@@ -17,7 +17,7 @@ console.log("dashboard: ", user.role)
     case "CREATOR":
       return redirect("/dashboard/creator");
     case "ADMIN":
-      return redirect("/dashboard/creator");
+      return redirect("/dashboard/admin");
     default:
       return redirect("/");
   }

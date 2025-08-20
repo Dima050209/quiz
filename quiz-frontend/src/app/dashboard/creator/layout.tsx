@@ -1,5 +1,5 @@
 "use client";
-import { StudentSidebar } from "@/components/student-sidebar";
+import { UserSidebar } from "@/components/sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,10 +13,10 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { gotoCreatorRoute } from "@/lib/routes/creator-routes";
 import {
   DashboardRoutes,
-  makeRouteActive,
-} from "@/lib/routes";
+} from "@/lib/routes/routes";
 import { Separator } from "@radix-ui/react-separator";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -27,20 +27,20 @@ export default function CreatorLayout({
   children: React.ReactNode;
 }>) {
   const path = usePathname();
-  const [routes, setRoutes] = useState<DashboardRoutes>(makeRouteActive(path));
+  const [routes, setRoutes] = useState<DashboardRoutes>(gotoCreatorRoute(path));
 
   useEffect(() => {
-    setRoutes(makeRouteActive(path));
+    setRoutes(gotoCreatorRoute(path));
   }, [path]);
 
   const setActiveRoute = (routeUrl: string) => {
-    setRoutes(makeRouteActive(routeUrl));
+    setRoutes(gotoCreatorRoute(routeUrl));
   };
 
   return (
     <div>
       <SidebarProvider>
-        <StudentSidebar routes={routes} setActiveRoute={setActiveRoute} />
+        <UserSidebar routes={routes} setActiveRoute={setActiveRoute} />
 
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">

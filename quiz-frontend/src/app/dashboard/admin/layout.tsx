@@ -13,28 +13,28 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { gotoAdminRoute } from "@/lib/routes/admin-routes";
 import {
   DashboardRoutes,
 } from "@/lib/routes/routes";
-import { gotoStudentRoute } from "@/lib/routes/student-routes";
 import { Separator } from "@radix-ui/react-separator";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-export default function StudentLayout({
+export default function CreatorLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const path = usePathname();
-  const [routes, setRoutes] = useState<DashboardRoutes>(gotoStudentRoute(path));
+  const [routes, setRoutes] = useState<DashboardRoutes>(gotoAdminRoute(path));
 
   useEffect(() => {
-    setRoutes(gotoStudentRoute(path));
+    setRoutes(gotoAdminRoute(path));
   }, [path]);
 
   const setActiveRoute = (routeUrl: string) => {
-    setRoutes(gotoStudentRoute(routeUrl));
+    setRoutes(gotoAdminRoute(routeUrl));
   };
 
   return (

@@ -13,11 +13,11 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import UserdataBadge from "./ui/userdata-badge"
-import { DashboardRoutes } from "@/lib/routes"
+import { DashboardRoutes } from "@/lib/routes/routes"
 import Link from "next/link"
 
 
-export function StudentSidebar({routes, setActiveRoute, ...props }: {routes: DashboardRoutes, setActiveRoute: (routeUrl: string) => void} & React.ComponentProps<typeof Sidebar>) {
+export function UserSidebar({routes, setActiveRoute, ...props }: {routes: DashboardRoutes, setActiveRoute: (routeUrl: string) => void} & React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader className="border-b">

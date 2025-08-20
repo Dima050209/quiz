@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function CreatorDashboard() {
+export default function AdminDashboard() {
   return (
     <div>Content</div>
   );
